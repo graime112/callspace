@@ -52,6 +52,11 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.static(join(__dirname, '../client')));
 
+// Тестовая страница для отладки
+app.get('/test-button', (req, res) => {
+  res.sendFile(join(__dirname, '../client/test-button.html'));
+});
+
 // Server info endpoint
 app.get('/api/server/info', (req, res) => {
   res.json({

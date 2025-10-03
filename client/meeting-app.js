@@ -1,3 +1,9 @@
+
+    // Принудительное исправление URL для Railway
+    function forceHTTPS(url) {
+        if (!url) return url;
+        return url.replace(/^http:///, 'https://');
+    }
 class MeetingClient {
     constructor() {
         // Pre-join screen elements
@@ -459,7 +465,7 @@ class MeetingClient {
     getShareLink() {
         // Always construct absolute URL so anyone can join from any device
         // Force HTTPS for Railway deployment
-        const origin = window.location.origin.replace('http://', 'https://');
+        const origin = forceHTTPS(window.location.origin);
         return `${origin}/join/${this.currentRoom}`;
     }
 

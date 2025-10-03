@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Start Meeting Button</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-container { max-width: 600px; margin: 0 auto; }
+        .btn { 
+            background: #4F46E5; 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 16px;
+            margin: 10px;
+        }
+        .btn:hover { background: #4338CA; }
+        .result { 
+            background: #f0f0f0; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin: 20px 0;
+            font-family: monospace;
+        }
+        .url-input { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 Test Start Meeting Button</h1>
+        
+        <div>
+            <label>Test URL:</label>
+            <input type="text" id="testUrl" class="url-input" 
+                   value="https://callspace-production.up.railway.app/join/TEST123" 
+                   placeholder="Enter meeting URL">
+        </div>
+        
+        <div>
+            <button class="btn" onclick="testStartMeeting()">🚀 Test Start Meeting</button>
+            <button class="btn" onclick="testCreateMeeting()">➕ Test Create Meeting</button>
+            <button class="btn" onclick="testHTTPS()">🔒 Test HTTPS Conversion</button>
+        </div>
+        
+        <div id="result" class="result">
+            <strong>Результат:</strong> Нажмите кнопку для тестирования
+        </div>
+        
+        <div>
+            <h3>📋 Инструкции:</h3>
+            <ol>
+                <li>Нажмите "Test Create Meeting" - создаст тестовую встречу</li>
+                <li>Нажмите "Test Start Meeting" - попробует открыть встречу</li>
+                <li>Нажмите "Test HTTPS" - проверит преобразование HTTP → HTTPS</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const result = document.getElementById('result');
+            result.innerHTML += '<br>' + new Date().toLocaleTimeString() + ': ' + message;
+        }
+        
+        function testCreateMeeting() {
+            log('🔄 Создаем тестовую встречу...');
+            
+            fetch('/api/create-meeting', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                log('✅ Встреча создана: ' + JSON.stringify(data));
+                document.getElementById('testUrl').value = data.meetingUrl;
+            })
+            .catch(error => {
+                log('❌ Ошибка создания встречи: ' + error.message);
+            });
+        }
+        
+        function testStartMeeting() {
+            const url = document.getElementById('testUrl').value;
+            log('🚀 Пытаемся открыть: ' + url);
+            
+            try {
+                window.location.href = url;
+                log('✅ Переход выполнен');
+            } catch (error) {
+                log('❌ Ошибка перехода: ' + error.message);
+            }
+        }
+        
+        function testHTTPS() {
+            const testUrls = [
+                'http://callspace-production.up.railway.app/join/TEST123',
+                'https://callspace-production.up.railway.app/join/TEST123',
+                'http://localhost:3000/join/TEST123'
+            ];
+            
+            testUrls.forEach(url => {
+                const httpsUrl = url.replace('http://', 'https://');
+                log('🔄 ' + url + ' → ' + httpsUrl);
+            });
+        }
+        
+        // Автоматически тестируем при загрузке
+        window.onload = function() {
+            log('📱 Страница загружена. Готов к тестированию!');
+        };
+    </script>
+</body>
+</html>

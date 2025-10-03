@@ -1,3 +1,9 @@
+
+    // Принудительное исправление URL для Railway
+    function forceHTTPS(url) {
+        if (!url) return url;
+        return url.replace(/^http:///, 'https://');
+    }
 class MeetingManager {
     constructor() {
         // Friends
@@ -517,7 +523,7 @@ class MeetingManager {
     
     showMeetingModal(meetingData) {
         // Force HTTPS for Railway deployment
-        const httpsUrl = meetingData.meetingUrl.replace('http://', 'https://');
+        const httpsUrl = forceHTTPS(meetingData.meetingUrl);
         this.meetingLink.value = httpsUrl;
         this.meetingId.textContent = meetingData.roomId;
         this.meetingModal.style.display = 'flex';
@@ -544,7 +550,7 @@ class MeetingManager {
         if (this.currentMeetingData) {
             this.addCallToHistory(this.currentMeetingData.roomId);
             // Force HTTPS for Railway deployment
-            const httpsUrl = this.currentMeetingData.meetingUrl.replace('http://', 'https://');
+            const httpsUrl = forceHTTPS(this.currentMeetingData.meetingUrl);
             window.location.href = httpsUrl;
         }
     }
