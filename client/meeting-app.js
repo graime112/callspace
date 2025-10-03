@@ -458,7 +458,9 @@ class MeetingClient {
     
     getShareLink() {
         // Always construct absolute URL so anyone can join from any device
-        return `${window.location.origin}/join/${this.currentRoom}`;
+        // Force HTTPS for Railway deployment
+        const origin = window.location.origin.replace('http://', 'https://');
+        return `${origin}/join/${this.currentRoom}`;
     }
 
     async copyLink() {

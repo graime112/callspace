@@ -79,7 +79,7 @@ function generateRoomId() {
 // API для создания новой встречи
 app.post('/api/create-meeting', (req, res) => {
   const roomId = generateRoomId();
-  const meetingUrl = `${req.protocol}://${req.get('host')}/join/${roomId}`;
+  const meetingUrl = `https://${req.get('host')}/join/${roomId}`;
   
   res.json({
     roomId,
@@ -251,7 +251,7 @@ app.post('/api/users/invite', async (req, res) => {
     console.log(`✅ User created successfully: ${newUser.name} (${newUser.id})`);
     
     // Отправляем email приглашение
-    const inviteUrl = `${req.protocol}://${req.get('host')}/?user=${id}`;
+    const inviteUrl = `https://${req.get('host')}/?user=${id}`;
     const inviterName = inviterId || 'CallSpace Team';
     
     const emailResult = await sendInvitationEmail({
