@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting - CallSpace</title>
+    <link rel="stylesheet" href="meeting-style.css">
+</head>
+<body>
+    <div class="meeting-container">
+        <!-- Pre-join screen -->
+        <div class="pre-join-screen" id="preJoinScreen">
+            <div class="pre-join-card">
+                <div class="pre-join-header">
+                    <div class="logo">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect width="32" height="32" rx="8" fill="#4F46E5"/>
+                            <path d="M16 9L20 13L16 17M12 15L16 19L20 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="logo-text">CallSpace</span>
+                    </div>
+                    <button id="backHomeBtn" class="icon-btn">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M15.8333 10H4.16667M4.16667 10L10 15.8333M4.16667 10L10 4.16667" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="meeting-info">
+                    <h2>Ready to join?</h2>
+                    <p>Meeting ID:</p>
+                    <strong id="displayRoomId"></strong>
+                </div>
+                
+                <div class="preview-container">
+                    <video id="previewVideo" autoplay muted playsinline></video>
+                    <div class="video-overlay">
+                        <div class="preview-controls">
+                            <button id="previewToggleAudio" class="control-btn" title="Microphone">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M10 1.66667V10M10 10C8.61929 10 7.5 8.88071 7.5 7.5V3.33333C7.5 1.95262 8.61929 0.833333 10 0.833333C11.3807 0.833333 12.5 1.95262 12.5 3.33333V7.5C12.5 8.88071 11.3807 10 10 10ZM10 10V13.3333M10 13.3333C7.69881 13.3333 5.83333 11.4679 5.83333 9.16667V7.5M10 13.3333C12.3012 13.3333 14.1667 11.4679 14.1667 9.16667V7.5M7.5 16.6667H12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <button id="previewToggleVideo" class="control-btn" title="Camera">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M13.3333 5.83333L17.5 3.33333V16.6667L13.3333 14.1667M2.5 5.83333H11.6667C12.5871 5.83333 13.3333 6.57953 13.3333 7.5V14.1667C13.3333 15.0871 12.5871 15.8333 11.6667 15.8333H2.5C1.57953 15.8333 0.833333 15.0871 0.833333 14.1667V7.5C0.833333 6.57953 1.57953 5.83333 2.5 5.83333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="joinNowBtn" class="btn btn-primary btn-large">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M13.3333 5.83333L17.5 3.33333V16.6667L13.3333 14.1667M2.5 5.83333H11.6667C12.5871 5.83333 13.3333 6.57953 13.3333 7.5V14.1667C13.3333 15.0871 12.5871 15.8333 11.6667 15.8333H2.5C1.57953 15.8333 0.833333 15.0871 0.833333 14.1667V7.5C0.833333 6.57953 1.57953 5.83333 2.5 5.83333Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Join Meeting
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main meeting screen -->
+        <div class="meeting-screen" id="meetingScreen" style="display: none;">
+            <div class="meeting-header">
+                <div class="meeting-info-bar">
+                    <div class="logo-small">
+                        <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+                            <rect width="32" height="32" rx="8" fill="#4F46E5"/>
+                            <path d="M16 9L20 13L16 17M12 15L16 19L20 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="meeting-details">
+                        <span class="meeting-id">Meeting: <strong id="currentRoomId"></strong></span>
+                        <span class="participant-count" id="participantCount">1 participant</span>
+                    </div>
+                </div>
+                
+                <div class="meeting-actions">
+                    <button id="copyMeetingLink" class="icon-btn" title="Copy link">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M8.33333 10.8333C8.69114 11.3118 9.14777 11.7077 9.67226 11.9939C10.1968 12.2801 10.7764 12.4499 11.3704 12.4921C11.9644 12.5343 12.5607 12.4479 13.1184 12.2388C13.6761 12.0297 14.1828 11.7029 14.6042 11.2817L17.1042 8.78167C17.8802 7.98608 18.3108 6.91526 18.3017 5.80397C18.2925 4.69268 17.8444 3.62916 17.0556 2.84633C16.2668 2.0635 15.1988 1.62116 14.0875 1.61765C12.9762 1.61415 11.9058 2.05975 11.1125 2.83667L9.79167 4.15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M11.6667 9.16667C11.3089 8.68818 10.8522 8.29229 10.3277 8.00609C9.80325 7.71989 9.22364 7.55007 8.62962 7.50789C8.03559 7.46571 7.43929 7.55213 6.88159 7.76122C6.32389 7.97031 5.81724 8.29713 5.39583 8.71833L2.89583 11.2183C2.11985 12.0139 1.68926 13.0847 1.69842 14.196C1.70758 15.3073 2.15568 16.3708 2.94449 17.1537C3.7333 17.9365 4.80131 18.3788 5.91261 18.3823C7.0239 18.3858 8.09428 17.9402 8.8875 17.1633L10.2 15.85" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <button id="leaveMeetingBtn" class="btn btn-danger">
+                        Leave
+                    </button>
+                </div>
+            </div>
+            
+            <div class="video-grid" id="videoGrid">
+                <div class="video-wrapper remote-video">
+                    <video id="remoteVideo" autoplay playsinline></video>
+                    <div class="video-label">Participant</div>
+                    <div class="waiting-message" id="waitingMessage">
+                        <div class="waiting-content">
+                            <div class="spinner"></div>
+                            <p>Waiting for others to join...</p>
+                            <small>Share the meeting link</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="video-wrapper local-video">
+                    <video id="localVideo" autoplay muted playsinline></video>
+                    <div class="video-label">You</div>
+                </div>
+            </div>
+            
+            <div class="meeting-controls">
+                <div class="control-group">
+                    <button id="toggleAudio" class="control-btn active" title="Microphone">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 1V12M12 12C10.3431 12 9 10.6569 9 9V4C9 2.34315 10.3431 1 12 1C13.6569 1 15 2.34315 15 4V9C15 10.6569 13.6569 12 12 12ZM12 12V16M12 16C9.23858 16 7 13.7614 7 11V9M12 16C14.7614 16 17 13.7614 17 11V9M9 20H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <button id="toggleVideo" class="control-btn active" title="Camera">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M16 7L21 4V20L16 17M3 7H14C15.1046 7 16 7.89543 16 9V17C16 18.1046 15.1046 19 14 19H3C1.89543 19 1 18.1046 1 17V9C1 7.89543 1.89543 7 3 7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <button id="shareScreen" class="control-btn" title="Share screen">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 8V12M12 12V16M12 12H16M12 12H8M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Toast notifications -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+    
+    <script src="config.js"></script>
+    <script src="meeting-app.js"></script>
+</body>
+</html>

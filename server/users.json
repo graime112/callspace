@@ -1,0 +1,38 @@
+[
+  {
+    "id": "demo1",
+    "name": "John Doe",
+    "avatar": "JD",
+    "online": false,
+    "email": "john@example.com",
+    "role": "user"
+  },
+  {
+    "id": "admin",
+    "name": "Admin User",
+    "avatar": "AD",
+    "online": false,
+    "email": "admin@callspace.com",
+    "role": "admin"
+  },
+  {
+    "id": "test",
+    "name": "Test User",
+    "email": "test@example.com",
+    "avatar": "TU",
+    "online": false,
+    "role": "user",
+    "createdAt": "2025-10-03T12:38:55.202Z",
+    "lastSeen": null
+  },
+  {
+    "id": "unlimeted09",
+    "name": "Unlimeted09",
+    "email": "Unlimeted09@gmail.com",
+    "avatar": "U",
+    "online": false,
+    "role": "user",
+    "createdAt": "2025-10-03T12:41:28.492Z",
+    "lastSeen": null
+  }
+]

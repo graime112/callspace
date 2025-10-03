@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>CallSpace - Video Calls</title>
+    <link rel="stylesheet" href="home-style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+                        <rect width="32" height="32" rx="8" fill="#4F46E5"/>
+                        <path d="M16 9L20 13L16 17M12 15L16 19L20 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="logo-text">CallSpace</span>
+                </div>
+                <button class="icon-btn" id="inviteBtn" title="Invite">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="sidebar-search">
+                <input id="contactSearch" class="input-field" placeholder="Search contacts..." />
+            </div>
+
+            <div class="sidebar-tabs">
+                <button id="tabRecent" class="tab active">Recent</button>
+                <button id="tabContacts" class="tab">Contacts</button>
+            </div>
+
+            <div id="recentCallsList" class="list scrollable"></div>
+            <div id="friendsList" class="list scrollable" style="display:none"></div>
+        </aside>
+
+        <main class="main-hero">
+            <div class="hero-card">
+                <div class="hero-icon">
+                    <svg width="64" height="64" viewBox="0 0 80 80" fill="none">
+                        <circle cx="40" cy="40" r="40" fill="#EEF2FF"/>
+                        <path d="M50 32L58 26V54L50 48M26 28H44C46.2091 28 48 29.7909 48 32V48C48 50.2091 46.2091 52 44 52H26C23.7909 52 22 50.2091 22 48V32C22 29.7909 23.7909 28 26 28Z" fill="#4F46E5"/>
+                    </svg>
+                </div>
+                <h1 class="empty-title">Ready to connect?</h1>
+                <p class="empty-subtitle">Select a contact on the left to start a call, or create/join a meeting.</p>
+                <div class="action-buttons">
+                    <button id="newMeetingBtn" class="btn btn-primary">New Meeting</button>
+                    <button id="joinMeetingBtn" class="btn btn-secondary">Join Meeting</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Toast Container -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+    <!-- Join Meeting Modal -->
+    <div id="joinModal" class="modal" style="display: none;">
+        <div class="modal-overlay" id="joinModalOverlay"></div>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Join Meeting</h3>
+                <button class="close-btn" id="closeJoinModal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="meetingIdInput">Meeting ID or Link</label>
+                    <input type="text" id="meetingIdInput" placeholder="Enter meeting ID or paste link" class="input-field">
+                </div>
+                <button id="joinMeetingSubmit" class="btn btn-primary btn-block">Join Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meeting Created Modal -->
+    <div id="meetingModal" class="modal" style="display: none;">
+        <div class="modal-overlay" id="meetingModalOverlay"></div>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Meeting Created</h3>
+                <button class="close-btn" id="closeModal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="meeting-id-display">
+                    <label>Meeting ID</label>
+                    <div class="meeting-id-value" id="meetingId"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Meeting Link</label>
+                    <div class="link-input-group">
+                        <input type="text" id="meetingLink" readonly class="input-field">
+                        <button id="copyLinkBtn" class="btn btn-icon" title="Copy link">📋</button>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button id="startMeetingBtn" class="btn btn-primary btn-block">Start Meeting</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invite Modal -->
+    <div id="inviteModal" class="modal" style="display:none;">
+        <div class="modal-overlay" id="inviteOverlay"></div>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Invite a Friend</h3>
+                <button class="close-btn" id="closeInviteModal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="inviteUserId">Friend ID (optional)</label>
+                    <input type="text" id="inviteUserId" class="input-field" placeholder="e.g. alex">
+                </div>
+                <div class="form-group">
+                    <label>Invite Link</label>
+                    <div class="link-input-group">
+                        <input type="text" id="inviteLink" class="input-field" readonly>
+                        <button id="copyInviteBtn" class="btn btn-icon" title="Copy">📋</button>
+                    </div>
+                </div>
+                <div class="modal-actions" style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button id="shareInviteBtn" class="btn btn-secondary">Share</button>
+                    <button id="showQrBtn" class="btn btn-secondary">Show QR</button>
+                </div>
+                <div id="inviteQrWrap" style="margin-top:12px; display:none; text-align:center;">
+                    <img id="inviteQrImg" alt="QR" style="max-width:200px; border-radius:8px; border:1px solid var(--border);"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inline Call Modal -->
+    <div class="modal" id="homeCallModal" style="display:none;">
+        <div class="modal-overlay" id="homeCallOverlay"></div>
+        <div class="modal-card call-card">
+            <div class="call-body">
+                    <div class="avatar" id="homeCalleeAvatar">JS</div>
+                    <div class="callee-meta">
+                        <div class="name" id="homeCalleeName">Contact</div>
+                        <div class="status" id="homeCalleeStatus">Calling…</div>
+                    </div>
+                </div>
+
+                <div class="video-stage" id="homeVideoStage">
+                    <video id="homeRemoteVideo" autoplay playsinline></video>
+                    <video id="homeLocalVideo" autoplay muted playsinline class="pip"></video>
+                </div>
+
+                <div class="controls">
+                    <button class="ctrl-btn" id="homeMuteBtn" title="Mute">
+                        <span>🎙️</span>
+                    </button>
+                    <button class="ctrl-btn" id="homeVideoBtn" title="Camera">
+                        <span>📷</span>
+                    </button>
+                    <button class="ctrl-btn hangup" id="homeHangupBtn" title="End">
+                        <span>📞</span>
+                    </button>
+                    <button class="ctrl-btn" id="homeScreenBtn" title="Share screen">
+                        <span>🖥️</span>
+                    </button>
+                    <button class="ctrl-btn" id="homeSettingsBtn" title="Settings">
+                        <span>⚙️</span>
+                    </button>
+                </div>
+                <div class="timer" id="homeCallTimer">00:00</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="home-app.js"></script>
+</body>
+</html>

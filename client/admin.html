@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - CallSpace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #4F46E5;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4F46E5;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #4F46E5;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4338CA;
+        }
+
+        .btn-success {
+            background: #10B981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: #EF4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        .btn-secondary {
+            background: #6B7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4B5563;
+        }
+
+        .users-table {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: #F9FAFB;
+            padding: 15px 20px;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 200px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .table th {
+            background: #F9FAFB;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .table tbody tr:hover {
+            background: #F9FAFB;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #4F46E5;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status.online {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status.offline {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: 500;
+            z-index: 1001;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .toast.success {
+            background: #10B981;
+        }
+
+        .toast.error {
+            background: #EF4444;
+        }
+
+        .toast.info {
+            background: #3B82F6;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👥 User Management</h1>
+            <p>Manage users and invitations for CallSpace</p>
+        </div>
+
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalUsers">-</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="onlineUsers">-</div>
+                <div class="stat-label">Online Now</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="adminUsers">-</div>
+                <div class="stat-label">Admins</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="emailStatus">-</div>
+                <div class="stat-label">Email Status</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="searchInput">Search Users</label>
+                    <input type="text" id="searchInput" placeholder="Search by name, email, or ID...">
+                </div>
+                <div class="form-group">
+                    <label for="inviteEmail">Invite by Email</label>
+                    <input type="email" id="inviteEmail" placeholder="user@example.com">
+                </div>
+                <button class="btn btn-primary" id="inviteBtn">Invite User</button>
+            </div>
+        </div>
+
+        <div class="users-table">
+            <div class="table-header">
+                <div class="table-title">All Users</div>
+                <div class="search-box">
+                    <button class="btn btn-secondary" id="refreshBtn">Refresh</button>
+                </div>
+            </div>
+            <div id="usersTable">
+                <div class="loading">Loading users...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit User Modal -->
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">Add User</div>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <form id="userForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="userId">User ID</label>
+                        <input type="text" id="userId" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userRole">Role</label>
+                        <select id="userRole">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="userName">Full Name</label>
+                        <input type="text" id="userName" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="userEmail">Email</label>
+                        <input type="email" id="userEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userAvatar">Avatar (optional)</label>
+                        <input type="text" id="userAvatar" placeholder="e.g., JD">
+                    </div>
+                </div>
+                <div style="margin-top: 20px; text-align: right;">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">Save User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        class UserManager {
+            constructor() {
+                this.users = [];
+                this.currentUser = null;
+                this.isEditing = false;
+                
+                this.setupEventListeners();
+                this.loadUsers();
+            }
+
+            setupEventListeners() {
+                // Search
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    this.filterUsers(e.target.value);
+                });
+
+                // Invite user
+                document.getElementById('inviteBtn').addEventListener('click', () => {
+                    this.inviteUser();
+                });
+
+                // Refresh
+                document.getElementById('refreshBtn').addEventListener('click', () => {
+                    this.loadUsers();
+                });
+
+                // Modal
+                document.getElementById('closeModal').addEventListener('click', () => {
+                    this.closeModal();
+                });
+
+                document.getElementById('cancelBtn').addEventListener('click', () => {
+                    this.closeModal();
+                });
+
+                document.getElementById('userForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.saveUser();
+                });
+
+                // Close modal on overlay click
+                document.getElementById('userModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'userModal') {
+                        this.closeModal();
+                    }
+                });
+            }
+
+            async loadUsers() {
+                try {
+                    this.showLoading();
+                    const response = await fetch('/api/users');
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.users = data.users;
+                        this.renderUsers();
+                        this.updateStats();
+                        this.checkEmailConfig();
+                    } else {
+                        this.showToast('Failed to load users', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error loading users:', error);
+                    this.showToast('Error loading users', 'error');
+                }
+            }
+
+            async checkEmailConfig() {
+                try {
+                    const response = await fetch('/api/email/config');
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        const emailStatus = data.configured ? '✅' : '❌';
+                        document.getElementById('emailStatus').textContent = emailStatus;
+                        document.getElementById('emailStatus').title = data.message;
+                    }
+                } catch (error) {
+                    console.error('Error checking email config:', error);
+                    document.getElementById('emailStatus').textContent = '❓';
+                    document.getElementById('emailStatus').title = 'Could not check email configuration';
+                }
+            }
+
+            async inviteUser() {
+                const email = document.getElementById('inviteEmail').value.trim();
+                if (!email) {
+                    this.showToast('Please enter an email address', 'error');
+                    return;
+                }
+
+                // Валидация email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    this.showToast('Please enter a valid email address', 'error');
+                    return;
+                }
+
+                try {
+                    console.log('📧 Inviting user:', email);
+                    this.showToast('Sending invitation...', 'info');
+                    
+                    const response = await fetch('/api/users/invite', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            inviterId: 'admin'
+                        })
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        let message = `✅ User invited successfully: ${data.user.name}`;
+                        
+                        if (data.emailSent) {
+                            message += `\n📧 Invitation email sent to ${email}`;
+                        } else {
+                            message += `\n⚠️ User created but email not sent: ${data.emailError || 'Email not configured'}`;
+                        }
+                        
+                        this.showToast(message, 'success');
+                        document.getElementById('inviteEmail').value = '';
+                        this.loadUsers();
+                        this.checkEmailConfig();
+                        console.log('✅ User created:', data.user);
+                        console.log('📧 Email status:', data.emailSent ? 'Sent' : 'Failed');
+                    } else {
+                        console.error('❌ API Error:', data.error);
+                        this.showToast(`❌ Error: ${data.error}`, 'error');
+                    }
+                } catch (error) {
+                    console.error('❌ Network Error:', error);
+                    this.showToast(`❌ Network error: ${error.message}`, 'error');
+                }
+            }
+
+            filterUsers(query) {
+                const filtered = this.users.filter(user => 
+                    user.name.toLowerCase().includes(query.toLowerCase()) ||
+                    user.email.toLowerCase().includes(query.toLowerCase()) ||
+                    user.id.toLowerCase().includes(query.toLowerCase())
+                );
+                this.renderUsers(filtered);
+            }
+
+            renderUsers(usersToRender = this.users) {
+                const container = document.getElementById('usersTable');
+                
+                if (usersToRender.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <p>No users found</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const tableHTML = `
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Last Seen</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${usersToRender.map(user => `
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <div class="avatar">${user.avatar}</div>
+                                            <div>
+                                                <div style="font-weight: 500;">${user.name}</div>
+                                                <div style="font-size: 12px; color: #666;">@${user.id}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>${user.email}</td>
+                                    <td>
+                                        <span style="padding: 2px 8px; border-radius: 12px; font-size: 12px; background: ${user.role === 'admin' ? '#FEE2E2' : '#D1FAE5'}; color: ${user.role === 'admin' ? '#991B1B' : '#065F46'};">
+                                            ${user.role}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="status ${user.online ? 'online' : 'offline'}">
+                                            ${user.online ? 'Online' : 'Offline'}
+                                        </span>
+                                    </td>
+                                    <td>${user.lastSeen ? new Date(user.lastSeen).toLocaleString() : 'Never'}</td>
+                                    <td>
+                                        <div class="actions">
+                                            <button class="btn btn-primary btn-sm" onclick="userManager.editUser('${user.id}')">Edit</button>
+                                            <button class="btn btn-danger btn-sm" onclick="userManager.deleteUser('${user.id}')">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+
+                container.innerHTML = tableHTML;
+            }
+
+            updateStats() {
+                const totalUsers = this.users.length;
+                const onlineUsers = this.users.filter(u => u.online).length;
+                const adminUsers = this.users.filter(u => u.role === 'admin').length;
+
+                document.getElementById('totalUsers').textContent = totalUsers;
+                document.getElementById('onlineUsers').textContent = onlineUsers;
+                document.getElementById('adminUsers').textContent = adminUsers;
+            }
+
+            editUser(userId) {
+                const user = this.users.find(u => u.id === userId);
+                if (!user) return;
+
+                this.currentUser = user;
+                this.isEditing = true;
+
+                document.getElementById('modalTitle').textContent = 'Edit User';
+                document.getElementById('userId').value = user.id;
+                document.getElementById('userId').disabled = true;
+                document.getElementById('userName').value = user.name;
+                document.getElementById('userEmail').value = user.email;
+                document.getElementById('userAvatar').value = user.avatar;
+                document.getElementById('userRole').value = user.role;
+
+                document.getElementById('userModal').style.display = 'block';
+            }
+
+            async saveUser() {
+                const userData = {
+                    id: document.getElementById('userId').value,
+                    name: document.getElementById('userName').value,
+                    email: document.getElementById('userEmail').value,
+                    avatar: document.getElementById('userAvatar').value,
+                    role: document.getElementById('userRole').value
+                };
+
+                try {
+                    let response;
+                    if (this.isEditing) {
+                        response = await fetch(`/api/users/${userData.id}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(userData)
+                        });
+                    } else {
+                        response = await fetch('/api/users', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(userData)
+                        });
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.showToast(`User ${this.isEditing ? 'updated' : 'created'} successfully`, 'success');
+                        this.closeModal();
+                        this.loadUsers();
+                    } else {
+                        this.showToast(data.error, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error saving user:', error);
+                    this.showToast('Error saving user', 'error');
+                }
+            }
+
+            async deleteUser(userId) {
+                if (!confirm('Are you sure you want to delete this user?')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/users/${userId}`, {
+                        method: 'DELETE'
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.showToast('User deleted successfully', 'success');
+                        this.loadUsers();
+                    } else {
+                        this.showToast(data.error, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error deleting user:', error);
+                    this.showToast('Error deleting user', 'error');
+                }
+            }
+
+            closeModal() {
+                document.getElementById('userModal').style.display = 'none';
+                document.getElementById('userForm').reset();
+                document.getElementById('userId').disabled = false;
+                this.currentUser = null;
+                this.isEditing = false;
+            }
+
+            showLoading() {
+                document.getElementById('usersTable').innerHTML = '<div class="loading">Loading users...</div>';
+            }
+
+            showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            }
+        }
+
+        // Initialize when page loads
+        let userManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            userManager = new UserManager();
+        });
+    </script>
+</body>
+</html>

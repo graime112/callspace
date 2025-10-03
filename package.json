@@ -1,0 +1,23 @@
+{
+  "name": "callspace",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "CallSpace web app packaged with Capacitor",
+  "license": "UNLICENSED",
+  "scripts": {
+    "cap:init": "npx cap init CallSpace ru.ff.callspace --web-dir client",
+    "cap:add:android": "npx cap add android",
+    "cap:copy": "npx cap copy",
+    "cap:sync": "npx cap sync android",
+    "cap:open": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/core": "^6.2.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.1",
+    "typescript": "^5.9.3"
+  }
+}
