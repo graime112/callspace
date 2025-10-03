@@ -6,8 +6,8 @@
   "description": "CallSpace web app packaged with Capacitor",
   "license": "UNLICENSED",
   "scripts": {
-    "start": "cd server && node server.js",
-    "dev": "cd server && node server.js",
+    "start": "./start.sh",
+    "dev": "node server/server.js",
     "build": "echo 'No build step required'",
     "cap:init": "npx cap init CallSpace ru.ff.callspace --web-dir client",
     "cap:add:android": "npx cap add android",
