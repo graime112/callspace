@@ -516,7 +516,9 @@ class MeetingManager {
     }
     
     showMeetingModal(meetingData) {
-        this.meetingLink.value = meetingData.meetingUrl;
+        // Force HTTPS for Railway deployment
+        const httpsUrl = meetingData.meetingUrl.replace('http://', 'https://');
+        this.meetingLink.value = httpsUrl;
         this.meetingId.textContent = meetingData.roomId;
         this.meetingModal.style.display = 'flex';
     }
@@ -541,7 +543,9 @@ class MeetingManager {
     startMeeting() {
         if (this.currentMeetingData) {
             this.addCallToHistory(this.currentMeetingData.roomId);
-            window.location.href = this.currentMeetingData.meetingUrl;
+            // Force HTTPS for Railway deployment
+            const httpsUrl = this.currentMeetingData.meetingUrl.replace('http://', 'https://');
+            window.location.href = httpsUrl;
         }
     }
     
