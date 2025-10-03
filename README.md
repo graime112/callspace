@@ -34,13 +34,16 @@ npm start
 
 ### Развертывание на Railway
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/your-template-id)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/deploy?template=https://github.com/graime112/callspace)
 
-1. Нажмите кнопку "Deploy on Railway"
-2. Настройте переменные окружения:
+1. **Нажмите кнопку выше** или перейдите на [Railway](https://railway.app)
+2. **Подключите GitHub** (если не подключен)
+3. **Выберите репозиторий:** `graime112/callspace`
+4. **Нажмите "Deploy Now"**
+5. **Настройте переменные окружения:**
    - `EMAIL_USER` - ваш email
    - `EMAIL_PASS` - пароль приложения
-3. Дождитесь развертывания
+   - `NODE_ENV` - production
 
 ## 🔧 Настройка
 
